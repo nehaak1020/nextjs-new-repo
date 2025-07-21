@@ -1,9 +1,10 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -14,13 +15,27 @@ import {
   TextField,
   Box,
 } from '@mui/material';
+import {
+  loadCalendarEvents,
+  saveCalendarEvent,
+  resetCalendarEvents,
+} from '@/redux/actions/calendarActions';
+import type { RootState, AppDispatch } from '@/redux/store';
 
 export default function CalendarPage() {
+  const dispatch = useDispatch<AppDispatch>();
+  const events = useSelector((state: RootState) => state.calendar.events);
+
+  const calendarEvents = useSelector((state: RootState) => state.calendar.events);
+
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [eventType, setEventType] = useState<'event' | 'reminder' | ''>('');
   const [eventText, setEventText] = useState('');
-  const [events, setEvents] = useState<any[]>([]);
+
+  useEffect(() => {
+    dispatch(loadCalendarEvents());
+  }, [dispatch]);
 
   const handleDateClick = (arg: any) => {
     setSelectedDate(arg.dateStr);
@@ -30,14 +45,13 @@ export default function CalendarPage() {
   const handleAdd = () => {
     if (!eventType || !eventText) return;
 
-    setEvents([
-      ...events,
-      {
+    dispatch(
+      saveCalendarEvent({
         title: `${eventType === 'event' ? '🟨 Event' : '🔵 Reminder'}: ${eventText}`,
         start: selectedDate,
         backgroundColor: eventType === 'event' ? '#FFEB3B' : '#2196F3',
-      },
-    ]);
+      })
+    );
 
     setOpen(false);
     setEventType('');
@@ -45,7 +59,7 @@ export default function CalendarPage() {
   };
 
   const handleReset = () => {
-    setEvents([]);
+    dispatch(resetCalendarEvents());
   };
 
   return (
@@ -60,7 +74,7 @@ export default function CalendarPage() {
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         dateClick={handleDateClick}
-        events={events}
+        events={calendarEvents.map(ev => ({ ...ev, id: ev.id.toString() }))}
         height="auto"
       />
 

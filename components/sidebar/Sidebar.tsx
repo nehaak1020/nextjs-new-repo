@@ -51,7 +51,6 @@ const Sidebar = () => {
         },
       }}
     >
-      {/* Toggle Arrow Icon */}
       <Box
         sx={{
           position: 'absolute',
@@ -74,7 +73,6 @@ const Sidebar = () => {
         {open ? <ChevronLeft fontSize="small" /> : <ChevronRight fontSize="small" />}
       </Box>
 
-      {/* Navigation Items */}
       <List sx={{ mt: 8 }}>
         <SidebarItems menuItems={menuItems} open={open}/>
       </List>

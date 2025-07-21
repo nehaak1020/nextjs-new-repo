@@ -31,7 +31,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
 }) => {
   return (
     <>
-      {/* Row 1 */}
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
         <TextField
           label="Order Name"
@@ -55,7 +54,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
         />
       </Box>
 
-      {/* Row 2 */}
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
         <FormControl fullWidth required error={errors.workType}>
           <InputLabel>Work Type</InputLabel>
@@ -86,7 +84,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
         </FormControl>
       </Box>
 
-      {/* Row 3 */}
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
         <TextField
           label="Start Date"
@@ -114,7 +111,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
         />
       </Box>
 
-      {/* Row 4 */}
       <Box sx={{ mb: 3 }}>
         <TextField
           label="Description"

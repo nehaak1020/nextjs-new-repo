@@ -24,9 +24,8 @@ const SidebarItems: React.FC<SidebarItemsProps> = ({ menuItems, open }) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Function to map menu label to route path
   const getPath = (label: string) => {
-    if (label === 'Work Orders') return '/'; // 👈 Home route for Work Orders
+    if (label === 'Work Orders') return '/'; 
     return `/${label.toLowerCase().replace(/\s+/g, '-')}`;
   };
 
@@ -39,7 +38,10 @@ const SidebarItems: React.FC<SidebarItemsProps> = ({ menuItems, open }) => {
     <>
       {menuItems.map(({ label, icon }) => {
         const path = getPath(label);
-        const isActive = (label === 'Work Orders' && pathname === '/') || pathname === path;
+        const isActive =
+        (label === 'Work Orders' &&
+          (pathname === '/' || pathname?.startsWith('/orders/') && pathname?.endsWith('/edit'))) ||
+        pathname === path;
 
         return (
           <Tooltip title={!open ? label : ''} placement="right" key={label}>

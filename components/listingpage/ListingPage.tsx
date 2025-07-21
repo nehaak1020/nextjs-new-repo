@@ -1,6 +1,5 @@
-// === ListingPage.tsx ===
 'use client';
-import React, { useEffect, useState, useCallback, useMemo  } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef  } from 'react';
 import {
   Box, Button, Typography, Stack, CircularProgress, TextField
 } from '@mui/material';
@@ -13,6 +12,11 @@ import { Order } from '@/redux/slices/orderSlice';
 import type { RootState, AppDispatch } from '@/redux/store';
 import Create from './createorders/Create';
 import styles from './ListingPage.module.css';
+import { useTheme } from '@mui/material/styles';
+
+const triggerDataGridResize = () => {
+  window.dispatchEvent(new Event('resize'));
+};
 
 const ListingPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,6 +28,31 @@ const ListingPage: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true); 
   const [searchQuery, setSearchQuery] = useState('');
+  const [gridKey, setGridKey] = useState(0); 
+  const gridContainerRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
+useEffect(() => {
+  let resizeTimeout: NodeJS.Timeout;
+
+  const observer = new ResizeObserver(() => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      triggerDataGridResize();       
+      setGridKey((prev) => prev + 1);  
+    }, 350); 
+  });
+
+  if (gridContainerRef.current) {
+    observer.observe(gridContainerRef.current);
+  }
+
+  return () => {
+    observer.disconnect();
+    clearTimeout(resizeTimeout);
+  };
+}, []);
+
+
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -81,97 +110,95 @@ const ListingPage: React.FC = () => {
 
 
   return (
-    <Box sx={{ p: 4, minHeight: '80vh', position: 'relative' }}>
-      <Stack direction="row" justifyContent="space-between" mb={2}>
-        <Typography variant="h6">Orders List</Typography>
-       <Stack direction="row" spacing={2} alignItems="center">
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              mb: 2,
-            }}
-          >
-            <TextField
-              variant="outlined"
-              placeholder="Search orders..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                sx: {
-                  borderRadius: '30px',
-                  backgroundColor: '#fff',
-                  paddingRight: '10px',
-                  height: '40px',
-                  boxShadow: 1,
-                },
-              }}
-              sx={{
-                width: '300px',
-              }}
-            />
-          </Box>
-
-          {selectedRows.ids.size > 0 && (
-            <Button onClick={handleDeleteSelected} startIcon={<DeleteIcon />}>
-              Delete
-            </Button>
-          )}
-          <Button variant="contained" onClick={() => setOpenModal(true)}>
-            Create
-          </Button>
-        </Stack>
-      </Stack>
-
-      {isLoading ? (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '50vh',
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      ) : (
-        <DataGrid
-          rows={filteredOrders}
-          columns={columns}
-          getRowId={(row: Order) => row.id}
-          checkboxSelection
-          disableRowSelectionOnClick
-          onRowSelectionModelChange={(selection: GridRowSelectionModel) => {
-            setSelectedRows(selection);
-          }}
-          getRowClassName={(params) => {
-            const selectedIds = Array.from(selectedRows?.ids ?? []);
-            return selectedIds.includes(params.id) ? styles.selectedRow : '';
-          }}
-          rowSelectionModel={selectedRows}
-          autoHeight
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 5 },
-            },
-          }}
-          pageSizeOptions={[5]}
-          localeText={{ noRowsLabel: 'No orders found' }}
-          sx={{
-            '& .MuiDataGrid-columnHeader': {
-              backgroundColor: '#dedbdb', 
-            },
-          }}
-        />
-      )}
-
-      <Create
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        setParentLoading={setIsLoading}
+    <Box
+  className={styles.gridContainer}
+  ref={gridContainerRef}
+>
+  <Stack direction="row" justifyContent="space-between" mb={2}>
+    <Typography variant="h6">Orders List</Typography>
+    <Stack direction="row" spacing={2} alignItems="center">
+      <TextField
+        variant="outlined"
+        placeholder="Search orders..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        InputProps={{
+          sx: {
+            borderRadius: '30px',
+            backgroundColor: '#fff',
+            paddingRight: '10px',
+            height: '40px',
+            boxShadow: 1,
+          },
+        }}
+        sx={{ width: '300px' }}
       />
-    </Box>
+      {selectedRows.ids.size > 0 && (
+        <Button onClick={handleDeleteSelected} startIcon={<DeleteIcon />}>
+          Delete
+        </Button>
+      )}
+      <Button variant="contained" onClick={() => setOpenModal(true)}>
+        Create
+      </Button>
+    </Stack>
+  </Stack>
+
+  <Box className={styles.dataGridWrapper}>
+    {isLoading ? (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '50vh',
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    ) : (
+      <DataGrid
+        className={styles.fullWidthGrid}
+        key={gridKey}
+        rows={filteredOrders}
+        columns={columns}
+        getRowId={(row: Order) => row.id}
+        checkboxSelection
+        disableRowSelectionOnClick
+        onRowSelectionModelChange={(selection: GridRowSelectionModel) => {
+          setSelectedRows(selection);
+        }}
+        getRowClassName={(params) => {
+          const selectedIds = Array.from(selectedRows?.ids ?? []);
+          return selectedIds.includes(params.id) ? styles.selectedRow : '';
+        }}
+        rowSelectionModel={selectedRows}
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5]}
+        localeText={{ noRowsLabel: 'No orders found' }}
+        sx={{
+          width: '100%',
+          maxWidth: '100%',
+          overflowX: 'hidden',
+          '& .MuiDataGrid-columnHeader': {
+            backgroundColor: '#dedbdb',
+          },
+        }}
+      />
+    )}
+  </Box>
+
+  <Create
+    open={openModal}
+    onClose={() => setOpenModal(false)}
+    setParentLoading={setIsLoading}
+  />
+</Box>
+
   );
 };
 

@@ -24,10 +24,12 @@ const EditPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (order) {
-      setFormData(order);
-    }
-  }, [order]);
+  if (!order) {
+    router.push('/'); 
+  } else {
+    setFormData(order);
+  }}, [order, router]);
+
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -52,7 +54,7 @@ const EditPage = () => {
     setLoading(true);
     try {
       await dispatch(saveOrder(formData!) as any);
-      router.push('/'); // back to listing
+      router.push('/'); 
     } catch (error) {
       console.error('Error updating order:', error);
     } finally {
@@ -60,7 +62,21 @@ const EditPage = () => {
     }
   };
 
-  if (!formData) return <Typography>Loading...</Typography>;
+  if (!formData) {
+  return (
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="70vh"
+    >
+      <Typography variant="h6" color="textSecondary">
+        Loading...
+      </Typography>
+    </Box>
+  );
+}
+
 
   return (
     <Paper sx={{ p: 4, m: 4 }}>
