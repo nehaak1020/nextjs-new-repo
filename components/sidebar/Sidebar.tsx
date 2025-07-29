@@ -89,7 +89,7 @@ const Sidebar = () => {
         <SidebarItems menuItems={menuItems} open={open} />
       </List>
 
-      <Box sx={{ flexGrow: 2, marginTop:'50px' }} />
+      <Box sx={{ flexGrow: 2, marginTop: '50px', height: open ? '0' : '16vh' }} />
       <Box sx={{ px: 1.5, mt: 1 }}>
         <ListItem
           sx={{
