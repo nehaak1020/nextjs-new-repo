@@ -31,6 +31,9 @@ const RenderTable: React.FC<Props> = ({
     setSelectedRows(allSelected ? selectedRows.filter((id) => !allIds.includes(id)) : [...new Set([...selectedRows, ...allIds])]);
   };
 
+  const allSelected = rows.length > 0 && selectedRows.length === rows.length;
+  const isIndeterminate = selectedRows.length > 0 && selectedRows.length < rows.length;
+
   return (
     <>
       <TableContainer>
@@ -39,9 +42,9 @@ const RenderTable: React.FC<Props> = ({
             <TableRow sx={{ backgroundColor: '#dedbdb' }}>
               <TableCell padding="checkbox">
                 <Checkbox
-                  checked={selectedRows.length === rows.length}
-                  indeterminate={selectedRows.length > 0 && selectedRows.length < rows.length}
-                  onChange={handleSelectAll}
+                   checked={allSelected}
+                   indeterminate={isIndeterminate}
+                   onChange={handleSelectAll}
                 />
               </TableCell>
               <TableCell>Order Name</TableCell>
