@@ -7,7 +7,7 @@ import { RootState } from '@/redux/store';
 import { Order } from '@/redux/slices/orderSlice';
 import { saveOrder } from '@/redux/actions/orderActions';
 import { Box, Typography, Paper } from '@mui/material';
-import CreateForm from '@/components/listingpage/createorders/CreateForm';
+import CreateForm from '@/components/reports/CreateForm';
 
 const EditPage = () => {
   const { id } = useParams();
@@ -87,7 +87,6 @@ const EditPage = () => {
         loading={loading}
         onChange={handleChange}
         onSubmit={handleSubmit}
-        onCancel={() => router.push('/')}
       />
     </Paper>
   );

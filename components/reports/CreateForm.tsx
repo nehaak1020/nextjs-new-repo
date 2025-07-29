@@ -18,7 +18,6 @@ interface CreateFormProps {
   loading: boolean;
   onChange: (e: any) => void;
   onSubmit: () => void;
-  onCancel: () => void;
 }
 
 const CreateForm: React.FC<CreateFormProps> = ({
@@ -27,7 +26,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
   loading,
   onChange,
   onSubmit,
-  onCancel,
 }) => {
   return (
     <>
@@ -128,9 +126,8 @@ const CreateForm: React.FC<CreateFormProps> = ({
 
       {/* Actions */}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-        <Button onClick={onCancel} disabled={loading}>Cancel</Button>
         <Button variant="contained" onClick={onSubmit} disabled={loading}>
-          {loading ? <CircularProgress size={22} color="inherit" /> : 'Save'}
+          {loading ? <CircularProgress size={22} color="inherit" /> : 'Submit'}
         </Button>
       </Box>
     </>

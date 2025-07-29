@@ -16,6 +16,16 @@
   font-family: var(--font-geist-sans);
 }
 
+.body_content{
+  margin: 10px !important;
+  background-color: #ededed87;
+  overflow-y: hidden;
+}
+
+.list_item .MuiButtonBase-root .MuiListItemText-root span{
+  font-size: 0px !important;
+}
+
 @media (prefers-color-scheme: dark) {
   .page {
     --gray-rgb: 255, 255, 255;

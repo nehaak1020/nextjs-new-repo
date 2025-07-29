@@ -7,9 +7,12 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '@/redux/store'; 
+import { deleteOrdersAction } from '@/redux/actions/orderActions';
 
 const ActionMenu = ({ orderId }: { orderId: number }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>(); 
+
   const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -27,6 +30,11 @@ const ActionMenu = ({ orderId }: { orderId: number }) => {
     handleClose();
   };
 
+  const handleDelete = async () => {
+  await dispatch(deleteOrdersAction([orderId])); 
+  handleClose();
+  };
+
 
   return (
     <>
@@ -35,6 +43,7 @@ const ActionMenu = ({ orderId }: { orderId: number }) => {
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
     </>
   );

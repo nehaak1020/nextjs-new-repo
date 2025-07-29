@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { useRouter, usePathname } from 'next/navigation';
+import styles from '../../app/page.module.css';
 
 interface MenuItemType {
   label: string;
@@ -25,7 +26,7 @@ const SidebarItems: React.FC<SidebarItemsProps> = ({ menuItems, open }) => {
   const pathname = usePathname();
 
   const getPath = (label: string) => {
-    if (label === 'Work Orders') return '/'; 
+    if (label === 'Appeal Letter') return '/'; 
     return `/${label.toLowerCase().replace(/\s+/g, '-')}`;
   };
 
@@ -39,32 +40,36 @@ const SidebarItems: React.FC<SidebarItemsProps> = ({ menuItems, open }) => {
       {menuItems.map(({ label, icon }) => {
         const path = getPath(label);
         const isActive =
-        (label === 'Work Orders' &&
+        (label === 'Appeal Letter' &&
           (pathname === '/' || pathname?.startsWith('/orders/') && pathname?.endsWith('/edit'))) ||
         pathname === path;
 
         return (
           <Tooltip title={!open ? label : ''} placement="right" key={label}>
-            <ListItem disablePadding onClick={() => handleClick(label)}>
+            <ListItem disablePadding onClick={() => handleClick(label)} sx={{paddingLeft: '10px', paddingRight:'10px'}} className={styles.list_item}>
               <ListItemButton
-                sx={{
+                 sx={{
                   justifyContent: open ? 'initial' : 'center',
-                  backgroundColor: isActive ? 'lightblue' : 'transparent',
-                  '&:hover': {
-                    backgroundColor: isActive ? 'lightblue' : 'rgba(0, 0, 0, 0.04)',
-                  },
-                }}
+                  backgroundColor: isActive ? '#57718A' : 'transparent',
+                    '&:hover': {
+                      backgroundColor: isActive ? '#57718A' : '#57718A',
+                    },
+                    color:'white',
+                    borderRadius: '4px',
+                  }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 2 : 'auto',
                     justifyContent: 'center',
+                    color:'white',
+                    fontSize:'12px'
                   }}
                 >
                   {icon}
                 </ListItemIcon>
-                {open && <ListItemText primary={label} />}
+                {open && <ListItemText sx={{fontSize:'12px'}} primary={label} />}
               </ListItemButton>
             </ListItem>
           </Tooltip>

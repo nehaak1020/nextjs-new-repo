@@ -1,15 +1,17 @@
 'use client';
 
-import { Typography } from '@mui/material';
-import ListingPage from '@/components/listingpage/ListingPage';
+import AppealLetter from '@/components/appealLetter/AppealLetter';
+import { Box, Typography } from '@mui/material';
 
 export default function HomePage() {
   return (
     <>
-      <Typography variant="h5" mb={2}>
-        Work Orders
-      </Typography>
-      <ListingPage />
+      <Box sx={{ mx: 'auto', padding: '39px 16px'}}>
+            <Typography variant="h5" mb={2}>
+              Appeal Letter
+            </Typography>
+            <AppealLetter />
+      </Box>
     </>
   );
 }
